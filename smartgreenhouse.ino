@@ -20,27 +20,21 @@ void setup() {
   Serial.begin(115200);
   delay(100);
   Serial.println("\n=== SMART PLANT GREENHOUSE ===");
-  Serial.println("Inisialisasi sistem...\n");
 
-  // Pin modes
   pinMode(LDR_PIN, INPUT);
   pinMode(SOIL_PIN, INPUT);
   pinMode(PIR_PIN, INPUT);
   pinMode(FLAME_PIN, INPUT);
   pinMode(OBJECT_PIN, INPUT);
-  // Connect WIFI
   connectWiFi();
-  // Setup NTP Time
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-  Serial.println("Sinkronisasi waktu dengan NTP...");
   delay(2000);
-  // Firebase config
   config.api_key = API_KEY;
   config.database_url = DATABASE_URL;
   auth.user.email = USER_EMAIL;
   auth.user.password = USER_PASSWORD;
   config.token_status_callback = tokenStatusCallback;
-  Serial.println("Menghubungkan ke Firebase...");
+  Serial.println("firebase connecting");
 
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
@@ -52,20 +46,18 @@ void setup() {
   }
 
   if (Firebase.ready()) {
-    Serial.println("\n\n✓ Firebase terhubung!");
-    Serial.println("Sistem siap monitoring!\n");
+    Serial.println("\n\n firebase terhubung");
+    Serial.println("sistem siap\n");
   } else {
-    Serial.println("\n\nX Firebase gagal terhubung, sistem tetap berjalan...\n");
+    Serial.println("\n\n gagal\n");
   }
 }
 void loop() {
-    // Cek koneksi WiFi
     if (WiFi.status() != WL_CONNECTED) {
-      Serial.println("WiFi terputus! Mencoba reconnect...");
+      Serial.println("reconnect wifi");
       connectWiFi();
     }
   
-    // Update sensor secara berkala
     unsigned long now = millis();
     if (now - lastSensorUpdate > sensorInterval) {
       lastSensorUpdate = now;
@@ -73,32 +65,29 @@ void loop() {
     }
   }
   
-  // Fungsi koneksi WiFi
   void connectWiFi() {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-    Serial.print("Menghubungkan ke WiFi");
+    Serial.print("connecting wifi");
     unsigned long start = millis();
     while (WiFi.status() != WL_CONNECTED) {
       Serial.print(".");
       delay(500);
       if (millis() - start > 20000) {
-        Serial.println("\n\nX Gagal terhubung WiFi - restart...");
+        Serial.println("\n\n gagal terhubung");
         ESP.restart();
       }
     }
     Serial.println();
-    Serial.println("✓ WiFi Terhubung!");
-    Serial.print("IP Address: ");
+    Serial.println("terhubung");
+    Serial.print("IP ");
     Serial.println(WiFi.localIP());
   }
   void loop() {
-    // Cek koneksi WiFi
     if (WiFi.status() != WL_CONNECTED) {
-      Serial.println("WiFi terputus! Mencoba reconnect...");
+      Serial.println("wifi reconnect");
       connectWiFi();
     }
   
-    // Update sensor secara berkala
     unsigned long now = millis();
     if (now - lastSensorUpdate > sensorInterval) {
       lastSensorUpdate = now;
@@ -106,21 +95,20 @@ void loop() {
     }
   }
   
-  // Fungsi koneksi WiFi
   void connectWiFi() {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-    Serial.print("Menghubungkan ke WiFi");
+    Serial.print("Mconnecting wifi");
     unsigned long start = millis();
     while (WiFi.status() != WL_CONNECTED) {
       Serial.print(".");
       delay(500);
       if (millis() - start > 20000) {
-        Serial.println("\n\nX Gagal terhubung WiFi - restart...");
+        Serial.println("\n\n gagal connect");
         ESP.restart();
       }
     }
     Serial.println();
-    Serial.println("✓ WiFi Terhubung!");
-    Serial.print("IP Address: ");
+    Serial.println("berhasil terhubung");
+    Serial.print("IP:");
     Serial.println(WiFi.localIP());
   }
